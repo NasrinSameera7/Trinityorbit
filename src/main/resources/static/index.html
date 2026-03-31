@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinity EcoCart | Dynamic Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --eco-dark: #004b23;
+            --eco-mid: #38b000;
+            --glass: rgba(255, 255, 255, 0.95);
+            /* Grade Colors */
+            --color-a: #007f5f; --color-b: #55a630; --color-c: #eeef20;
+            --color-d: #fb8500; --color-e: #e63946; --color-f: #780000;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1b4332 0%, #081c15 100%);
+            margin: 0; color: white; min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(12px);
+            padding: 20px 60px; display: flex; justify-content: space-between;
+            align-items: center; border-bottom: 2px solid var(--eco-mid);
+        }
+
+        .container {
+            max-width: 1300px; margin: 40px auto;
+            display: grid; grid-template-columns: 1fr 400px; gap: 40px; padding: 0 20px;
+        }
+
+        .product-card {
+            background: var(--glass); border-radius: 30px; padding: 30px;
+            color: var(--eco-dark); text-align: center; transition: 0.4s;
+        }
+
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 0 20px var(--eco-mid); }
+
+        /* Dynamic Product Icons */
+        .prod-icon { font-size: 3.5rem; margin-bottom: 15px; display: block; }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1); border-radius: 40px; padding: 35px;
+            backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.2);
+            height: fit-content; position: sticky; top: 120px;
+        }
+
+        /* The Animated Grade Alphabet */
+        #gradeBadge, #finalGradeBig {
+            font-size: 5rem; font-weight: 900; transition: color 0.5s ease, transform 0.3s;
+        }
+
+        #success-page {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center;
+        }
+
+        .summary-card {
+            background: white; color: var(--eco-dark); padding: 50px;
+            border-radius: 50px; border: 8px solid var(--eco-mid); max-width: 600px; text-align: center;
+        }
+
+        .checkout-btn {
+            background: linear-gradient(90deg, var(--eco-mid), #bcff4a);
+            color: var(--eco-dark); border: none; padding: 20px; width: 100%;
+            border-radius: 20px; font-size: 1.3rem; font-weight: 900; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="success-page">
+        <div class="summary-card">
+            <h1>🍃 MISSION COMPLETE</h1>
+            <div id="final-list" style="text-align: left; margin: 20px 0; max-height: 150px; overflow-y: auto;"></div>
+            <p>Your Sustainability Rating:</p>
+            <div id="finalGradeBig">-</div>
+            <h2>Total: <span id="finalScore">0.0</span> kg</h2>
+            <button class="checkout-btn" onclick="window.location.reload()">NEW SHOPPING TRIP</button>
+        </div>
+    </div>
+
+    <nav>
+        <div style="font-weight:900; font-size:1.8rem; color:var(--eco-mid)"><i class="fas fa-leaf"></i> ECO-ULTRA</div>
+        <div id="itemCount">0 ITEMS</div>
+    </nav>
+
+    <div class="container" id="main-shop">
+        <main><div id="productGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px;"></div></main>
+
+        <aside class="sidebar">
+            <h2 style="text-align:center">Current Cart</h2>
+            <div id="cartItems" style="margin-bottom: 20px;"></div>
+            <div style="text-align:center; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px;">
+                <h1 style="margin:0"><span id="totalVal">0.0</span> <small>kg</small></h1>
+                <div id="gradeBadge">-</div>
+            </div>
+            <button class="checkout-btn" onclick="triggerCheckout()">CHECKOUT NOW</button>
+        </aside>
+    </div>
+
+    <script>
+        let cart = [];
+        let total = 0;
+        const colorMap = { 'A': '#007f5f', 'B': '#55a630', 'C': '#eeef20', 'D': '#fb8500', 'E': '#e63946', 'F': '#780000' };
+
+        // Assigns an icon based on the Category name from your Database
+        function getIcon(category) {
+            const cat = category.toLowerCase();
+            if(cat.includes('cloth')) return 'fas fa-tshirt';
+            if(cat.includes('kit') || cat.includes('food')) return 'fas fa-utensils';
+            if(cat.includes('elec')) return 'fas fa-bolt';
+            if(cat.includes('per') || cat.includes('care')) return 'fas fa-pump-soap';
+            return 'fas fa-box';
+        }
+
+        async function init() {
+            const res = await fetch('http://localhost:8080/api/products');
+            const data = await res.json();
+            const grid = document.getElementById('productGrid');
+            data.forEach(p => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <i class="${getIcon(p.category)} prod-icon" style="color: var(--eco-mid)"></i>
+                        <h3>${p.name}</h3>
+                        <p style="opacity:0.6">${p.category}</p>
+                        <button onclick="addToCart('${p.name}')" style="background:var(--eco-dark); color:white; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; width:100%">Add</button>
+                    </div>`;
+            });
+        }
+
+        async function addToCart(name) {
+            const res = await fetch('http://localhost:8080/api/calculate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ productName: name })
+            });
+            const data = await res.json();
+            cart.push({name: name, carbon: data.totalCarbon});
+            total += data.totalCarbon;
+            
+            // Update UI with Dynamic Colors
+            document.getElementById('totalVal').innerText = total.toFixed(1);
+            const badge = document.getElementById('gradeBadge');
+            badge.innerText = data.ecoGrade;
+            badge.style.color = colorMap[data.ecoGrade] || 'white';
+            
+            document.getElementById('cartItems').innerHTML = cart.map(i => `<div style="display:flex; justify-content:space-between"><span>${i.name}</span><b>${i.carbon}kg</b></div>`).join('');
+            document.getElementById('itemCount').innerText = `${cart.length} ITEMS`;
+        }
+
+        function triggerCheckout() {
+            if(cart.length === 0) return alert("Cart empty!");
+            document.getElementById('main-shop').style.display = 'none';
+            document.getElementById('success-page').style.display = 'flex';
+            document.getElementById('finalScore').innerText = total.toFixed(1);
+            
+            // Set Final Big Grade Color
+            const finalGrade = document.getElementById('gradeBadge').innerText;
+            const bigGrade = document.getElementById('finalGradeBig');
+            bigGrade.innerText = finalGrade;
+            bigGrade.style.color = colorMap[finalGrade];
+            
+            document.getElementById('final-list').innerHTML = cart.map(i => `<div>✅ ${i.name}</div>`).join('');
+        }
+        init();
+    </script>
+</body>
+</html>
