@@ -1,13 +1,28 @@
-# Trinityorbit
-Trinity EcoCart is a modern, high-performance web application designed to track and visualize the carbon footprint of digital shopping. Built with a sleek "Nature-Tech" aesthetic, it helps users make sustainable choices by providing real-time carbon impact grading (A-F).
+Trinity EcoCart: Ultra-Green Carbon Tracking System"Saving the planet, one click at a time."Trinity EcoCart is a full-stack e-commerce simulation designed to visualize the environmental impact of consumer choices. By integrating a Spring Boot backend with a MySQL database, it provides real-time carbon footprint analysis and dynamic "Eco-Grading" for every purchase.
 
-Key Features : 
-Dynamic Carbon Grading: Real-time calculation of CO2 impact for every item added to the cart.Color-Shift UI: The interface dynamically changes colors (A=Emerald, F=Ruby) based on the user's sustainability score.Smart Product Catalog: Automatic categorization with custom icons for Electronics, Clothing, Kitchen, and Personal Care.
+Core Architecture:
 
-Eco-Checkout Summary: A dedicated transition page providing a full breakdown of the user's environmental mission.Glassmorphism Design: A premium, blur-heavy interface that feels modern and high-end.
+1. Dynamic Carbon Engine (A-F Grading)The system calculates the environmental weight of products using a proprietary algorithm:Grade A (Emerald): < 1.0kg CO2 (High Sustainability)Grade C (Yellow): 1.0kg - 3.0kg CO2 (Moderate Impact)Grade F (Ruby): > 5.0kg CO2 (High Footprint)
 
-Tech StackFrontend: HTML5, CSS3 (Flexbox/Grid), JavaScript (ES6+), FontAwesome.Backend: Java 21, Spring Boot 3.x.Database: MySQL 8.0 (Connected via mysql-connector-java)(Integrated via Spring Data JPA).Styling: Custom CSS with Glassmorphism and CSS Variables for dynamic branding.
+2. Nature-Tech UI/UXGlassmorphism Sidebar: Real-time cart updates with a blurred frosted-glass effect.Smart Icons: Automated category detection (Electronics , Clothing , Kitchen ).
+   
+3. Responsive Grid: A fluid product layout that adapts to all screen resolutions.
+   
+4.  Technical StackLayerTechnologyRoleFrontendHTML5, CSS3, JavaScript (Vanilla ES6)UI/UX & DOM ManipulationBackendJava 21, Spring Boot 3.xREST API & Business LogicDatabaseMySQL 8.0Relational Data StoragePersistenceSpring Data JPA / HibernateObject-Relational Mapping (ORM)IconsFontAwesome 6.0Dynamic Visual Indicators
+
+   
+5.  Project StructurePlaintextcarbon-tracker/
+├── src/main/java/com/trinityorbit/
+│   ├── CarbonTrackerApplication.java  <-- Entry Point
+│   ├── controller/CarbonController.java <-- API Endpoints
+│   ├── model/Product.java              <-- Database Entity
+│   └── service/CarbonService.java      <-- Logic Layer
+├── src/main/resources/
+│   ├── static/index.html               <-- Frontend UI
+│   └── application.properties          <-- MySQL Config
+└── pom.xml                             <-- Dependencies
 
 
+Key Functional HighlightsReal-time Color Shifting: The Grade letter (A-F) dynamically changes CSS color variables based on API response.RESTful Integration: Frontend uses fetch() to communicate with Spring Boot endpoints for instant calculations.Eco-Summary Overlay: A high-impact checkout modal that hides the shop and presents a final mission report.
 
 
