@@ -8,7 +8,7 @@ Core Architecture:
    
 3. Responsive Grid: A fluid product layout that adapts to all screen resolutions.
    
-4.  Technical StackLayerTechnologyRoleFrontendHTML5, CSS3, JavaScript (Vanilla ES6)UI/UX & DOM ManipulationBackendJava 21, Spring Boot 3.xREST API & Business LogicDatabaseMySQL 8.0Relational Data StoragePersistenceSpring Data JPA / HibernateObject-Relational Mapping (ORM)IconsFontAwesome 6.0Dynamic Visual Indicators
+4.  Technical Stack Layer TechnologyRole FrontendHTML5, CSS3, JavaScript (Vanilla ES6)UI/UX & DOM ManipulationBackendJava 21, Spring Boot 3.xREST API & Business LogicDatabaseMySQL 8.0Relational Data StoragePersistenceSpring Data JPA / HibernateObject-Relational Mapping (ORM)IconsFontAwesome 6.0Dynamic Visual Indicators
 
    
 5.  Project StructurePlaintextcarbon-tracker/
